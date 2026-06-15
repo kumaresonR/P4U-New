@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: P4U Profile API
+  version: 1.0.0
+  description: profile-management-services — overview.
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Profile
+paths:
+  /api/v1/profile/public/health:
+    get:
+      tags: [Profile]
+      summary: Public health
+      responses:
+        '200': { description: OK }
+  /api/v1/profile/me:
+    get:
+      tags: [Profile]
+      summary: Current user profile
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Profile }
+    patch:
+      tags: [Profile]
+      summary: Update profile
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Updated }
+  /api/v1/profile/me/addresses:
+    get:
+      tags: [Profile]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Address list }
+    post:
+      tags: [Profile]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Created }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

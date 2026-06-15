@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: P4U Catalog API
+  version: 1.0.0
+  description: catalog-management-services — overview (see ALL-APIS.md for full routes).
+servers:
+  - url: http://localhost:8080
+    description: API gateway
+  - url: http://localhost:8083
+    description: Catalog service direct
+tags:
+  - name: Catalog
+paths:
+  /api/v1/catalog/public/health:
+    get:
+      tags: [Catalog]
+      summary: Public health
+      responses:
+        '200':
+          description: OK
+  /api/v1/catalog/categories:
+    get:
+      tags: [Catalog]
+      summary: List categories
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: offset
+          in: query
+          schema: { type: integer, default: 0 }
+      responses:
+        '200': { description: Paginated categories }
+  /api/v1/catalog/vendors:
+    get:
+      tags: [Catalog]
+      summary: List vendors
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer }
+        - name: offset
+          in: query
+          schema: { type: integer }
+      responses:
+        '200': { description: Paginated vendors }
+  /api/v1/catalog/vendors/{vendorId}:
+    get:
+      tags: [Catalog]
+      summary: Get vendor
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: vendorId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Vendor }
+        '404': { description: Not found }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: P4U Vendor Portal API
+  version: 1.0.0
+  description: vendor-management-services — overview.
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Vendor
+paths:
+  /api/v1/vendor/public/health:
+    get:
+      tags: [Vendor]
+      responses:
+        '200': { description: OK }
+  /api/v1/vendor/me:
+    get:
+      tags: [Vendor]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Vendor profile }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

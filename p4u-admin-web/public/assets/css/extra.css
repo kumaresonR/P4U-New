@@ -1,0 +1,668 @@
+.jvm-zoom-btn.jvm-zoomin,
+.jvm-zoom-btn.jvm-zoomout {
+  top: 10px;
+  background: #d1d5db;
+  color: #111827;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+}
+
+.slick-dots {
+  display: flex !important;
+}
+
+.fc-toolbar-title {
+  font-size: 24px !important;
+  font-weight: 600;
+}
+
+.fc-button {
+  border-color: var(--primary-600) !important;
+  background: #fff !important;
+  color: var(--primary-600) !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-width: 80px !important;
+}
+
+.fc-button:hover {
+  background-color: var(--primary-50) !important;
+}
+
+.fc-button-active {
+  color: #fff !important;
+  background-color: var(--primary-600) !important;
+}
+
+.fc-button-active:hover {
+  color: #fff !important;
+  background-color: var(--primary-600) !important;
+}
+
+.fc-button-active:focus,
+.fc .fc-button-primary:not(:disabled):active:focus {
+  box-shadow: none !important;
+}
+
+.fc-toolbar-chunk {
+  display: flex !important;
+}
+
+.fc .fc-button-primary:focus {
+  box-shadow: none !important;
+}
+
+.fc-h-event {
+  border: 0;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+}
+
+.fc-h-event .fc-event-main {
+  border: 0;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+}
+
+.fc-v-event .fc-event-main {
+  border: 0;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+}
+
+.fc-daygrid-day-number {
+  transition: background-color 0.2s;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  border-radius: 50%;
+}
+
+.fc-daygrid-day:hover .fc-daygrid-day-number {
+  background-color: var(--primary-100) !important;
+  color: var(--primary-600) !important;
+  transition: background-color 0.2s;
+}
+
+.slider-progress .active {
+  transition: all 0.3s linear;
+}
+
+.slick-list {
+  margin: 0 -7px;
+}
+
+.slick-slide > div {
+  padding: 0 10px;
+}
+
+.center-gap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inline-grid {
+  display: inline-grid;
+}
+
+.image-upload__boxInner.custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+table.dataTable th.dt-type-numeric,
+table.dataTable th.dt-type-date,
+table.dataTable td.dt-type-numeric,
+table.dataTable td.dt-type-date {
+  text-align: unset !important;
+}
+
+/* Hide all submenus by default */
+.sidebar-submenu {
+  /* display: none; */
+  list-style: none;
+  padding-left: 20px;
+  /* Adjust as needed */
+}
+
+.sidebar-menu .sidebar-submenu {
+  display: block;
+}
+
+/* Optional: Add transition for smooth toggle */
+.sidebar-menu .dropdown .sidebar-submenu {
+  transition: max-height 0.3s linear;
+  overflow: hidden;
+  max-height: 0px;
+}
+
+/* .sidebar-menu .dropdown.open .sidebar-submenu {
+  max-height: 1000px;
+} */
+
+.sidebar-menu li > a > i {
+  margin-inline-end: 0;
+}
+
+.mr-10 {
+  margin-right: 10px !important;
+}
+
+.sidebar-menu .sidebar-submenu li a {
+  gap: 12px;
+}
+
+.me-8 {
+  margin-right: 8px;
+}
+
+.gap-10 {
+  display: flex;
+  gap: 8px;
+}
+
+.w-33 {
+  width: 33.33%;
+}
+
+.overlay::after {
+  position: absolute;
+  content: "";
+  top: 0;
+  inset-inline-start: 0;
+  width: 0;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.65;
+  transition: all 0.3s;
+  z-index: 2;
+}
+
+.overlay.active::after {
+  width: 100%;
+}
+
+.Gallery-masonry {
+  background: #000;
+  z-index: 99999;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+/* P4U admin: dark mode form readability
+   Bootstrap applies a light --bs-secondary-bg on :disabled controls while the theme
+   sets light text (--text-primary-light), causing invisible white-on-gray text. */
+html[data-theme="dark"] .form-control:disabled,
+html[data-theme="dark"] .form-select:disabled,
+html[data-theme="dark"] textarea:disabled {
+  background-color: var(--neutral-100) !important;
+  color: var(--neutral-900) !important;
+  -webkit-text-fill-color: var(--neutral-900) !important;
+  opacity: 1 !important;
+  border-color: var(--input-form-light) !important;
+}
+
+html[data-theme="dark"] .form-control[readonly]:not(:disabled),
+html[data-theme="dark"] textarea[readonly]:not(:disabled) {
+  background-color: var(--neutral-100) !important;
+  color: var(--neutral-900) !important;
+  -webkit-text-fill-color: var(--neutral-900) !important;
+}
+
+html[data-theme="dark"] .form-control:disabled::placeholder,
+html[data-theme="dark"] .form-select:disabled::placeholder,
+html[data-theme="dark"] textarea:disabled::placeholder {
+  color: var(--neutral-500) !important;
+  -webkit-text-fill-color: var(--neutral-500) !important;
+}
+
+/* Bootstrap utility stays literal white; map to theme surface in dark mode */
+html[data-theme="dark"] .bg-white {
+  background-color: var(--white) !important;
+  color: var(--text-secondary-light);
+}
+
+html[data-theme="dark"] select option,
+html[data-theme="dark"] .form-select option {
+  background-color: var(--neutral-100);
+  color: var(--neutral-900);
+}
+
+/* P4U admin design-token harmonization for modernized modules */
+.radius-10 {
+  border-radius: 10px !important;
+}
+
+.radius-12 {
+  border-radius: 12px !important;
+}
+
+.radius-16 {
+  border-radius: 16px !important;
+}
+
+.table-responsive.scroll-sm {
+  overflow-x: auto;
+}
+
+.table-responsive.scroll-sm::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive.scroll-sm::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: 99px;
+}
+
+.table-responsive.scroll-sm::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.btn.rounded-circle.d-flex.justify-content-center.align-items-center[style*="width: 36px"] {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+
+.input-group.radius-8 .form-control,
+.input-group.radius-10 .form-control,
+.input-group.radius-8 .form-select,
+.input-group.radius-10 .form-select {
+  min-height: 42px;
+}
+
+/* ─── P4U admin: flat teal sidebar ─── */
+.sidebar {
+  background: #149a9a !important;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #eaf6f6;
+}
+
+.sidebar-logo {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-inline-end-color: rgba(255, 255, 255, 0.1) !important;
+  border-block-end-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sidebar header: wordmark + tagline only (no graphic logo) */
+.sidebar:not(.active) .sidebar-logo {
+  align-items: center !important;
+}
+
+.sidebar-logo .sidebar-logo-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+  justify-content: center;
+}
+
+.sidebar-logo .sidebar-logo-title {
+  font-weight: 800;
+  font-size: 1.375rem;
+  color: #ffffff !important;
+  letter-spacing: 0.01em;
+}
+
+.sidebar-logo .sidebar-logo-tagline {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+  margin-block-start: 0.25rem;
+  opacity: 0.95;
+}
+
+/* Collapsed rail: compact title, hide tagline */
+.sidebar.active:not(:hover) .sidebar-logo {
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.sidebar.active:not(:hover) .sidebar-logo .sidebar-logo-copy {
+  display: flex !important;
+  align-items: center;
+  text-align: center;
+}
+
+.sidebar.active:not(:hover) .sidebar-logo-tagline {
+  display: none !important;
+}
+
+.sidebar.active:not(:hover) .sidebar-logo-title {
+  font-size: 0.7rem !important;
+  line-height: 1.2 !important;
+  word-break: break-word;
+}
+
+/* Collapsed hover (peek): full wordmark */
+.sidebar.active:hover .sidebar-logo {
+  justify-content: flex-start !important;
+}
+
+.sidebar.active:hover .sidebar-logo-tagline {
+  display: block !important;
+}
+
+.sidebar.active:hover .sidebar-logo-title {
+  font-size: 1.375rem !important;
+}
+
+.sidebar-menu-area {
+  border-inline-end-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar-menu-area::-webkit-scrollbar {
+  background-color: transparent !important;
+}
+
+.sidebar-menu-area::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.sidebar-menu-area:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.sidebar-close-btn {
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  color: #eaf6f6 !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Section labels: small caps like reference */
+.sidebar-menu .sidebar-menu-group-title {
+  color: #cfeaea !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+  margin-block-start: 0.75rem !important;
+}
+
+/* Default nav row */
+.sidebar-menu li > a:not(.active-page) {
+  color: #eaf6f6 !important;
+}
+
+.sidebar-menu li > a:not(.active-page) .menu-icon {
+  color: #eaf6f6 !important;
+}
+
+.sidebar-menu li > a:not(.active-page):hover {
+  color: #eaf6f6 !important;
+  background-color: #138f8f !important;
+}
+
+.sidebar-menu li > a:not(.active-page):hover .menu-icon {
+  color: #eaf6f6 !important;
+}
+
+/* Active + expanded parent: darker teal, cyan left accent, white type */
+.sidebar-menu li > a.active-page {
+  background: #128c8c !important;
+  color: #ffffff !important;
+  box-shadow: inset 3px 0 0 #1ccad8 !important;
+}
+
+.sidebar-menu li > a.active-page:hover {
+  background: #128c8c !important;
+  color: #ffffff !important;
+}
+
+.sidebar-menu li > a.active-page .menu-icon {
+  color: #ffffff !important;
+}
+
+.sidebar-menu li.dropdown.open > a,
+.sidebar-menu li.dropdown.dropdown-open > a {
+  background: #128c8c !important;
+  color: #ffffff !important;
+  box-shadow: inset 3px 0 0 #1ccad8 !important;
+}
+
+.sidebar-menu li.dropdown.open > a:hover,
+.sidebar-menu li.dropdown.dropdown-open > a:hover {
+  background: #128c8c !important;
+  color: #ffffff !important;
+}
+
+.sidebar-menu li.dropdown > a::after {
+  color: #cfeaea !important;
+}
+
+.sidebar-menu li.dropdown.open > a::after,
+.sidebar-menu li.dropdown.dropdown-open > a::after {
+  color: #ffffff !important;
+}
+
+/* Submenu */
+.sidebar-menu .sidebar-submenu li a:not(.active-page):not(.active) {
+  color: #eaf6f6 !important;
+}
+
+.sidebar-menu .sidebar-submenu li a:not(.active-page):not(.active) .menu-icon {
+  color: #eaf6f6 !important;
+}
+
+.sidebar-menu .sidebar-submenu li a:not(.active-page):not(.active):hover {
+  color: #eaf6f6 !important;
+  background-color: #138f8f !important;
+}
+
+.sidebar-menu .sidebar-submenu li a:not(.active-page):not(.active):hover .menu-icon {
+  color: #eaf6f6 !important;
+}
+
+.sidebar-menu .sidebar-submenu li a.active-page,
+.sidebar-menu .sidebar-submenu li a.active {
+  background: #128c8c !important;
+  color: #ffffff !important;
+  box-shadow: inset 3px 0 0 #1ccad8 !important;
+  font-weight: 600;
+}
+
+.sidebar-menu .sidebar-submenu li a.active-page .menu-icon,
+.sidebar-menu .sidebar-submenu li a.active .menu-icon {
+  color: #ffffff !important;
+}
+
+.sidebar-menu .sidebar-submenu li a.active-page:hover,
+.sidebar-menu .sidebar-submenu li a.active:hover {
+  background: #128c8c !important;
+  color: #ffffff !important;
+}
+
+/* Collapsed rail: keep icons readable on teal */
+.sidebar.active .sidebar-menu li > a:not(.active-page) .menu-icon {
+  color: #eaf6f6 !important;
+}
+
+.sidebar.active .sidebar-menu li > a.active-page .menu-icon {
+  color: #ffffff !important;
+}
+
+/* Vendor (and similar) view modals: keep disabled fields readable */
+.vendor-form-readonly .form-control:disabled,
+.vendor-form-readonly .form-select:disabled {
+  opacity: 1 !important;
+  color: #1e293b !important;
+  -webkit-text-fill-color: #1e293b !important;
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Admin list / module toolbars: keep filters + actions on one row; scroll horizontally when needed */
+.p4u-admin-filter-row {
+  display: flex;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.p4u-admin-filter-row.align-items-start {
+  align-items: flex-start;
+}
+
+/* Nested toolbars (e.g. card-header left cluster) stay one row */
+.p4u-admin-filter-row .p4u-admin-filter-row {
+  flex-wrap: nowrap !important;
+}
+
+.p4u-admin-filter-row .btn {
+  white-space: nowrap;
+}
+
+.p4u-admin-filter-row > * {
+  flex: 0 0 auto;
+}
+
+/* Bootstrap sets .form-control { width: 100% }; that breaks horizontal toolbars (each field becomes full row). */
+.p4u-admin-filter-row > .form-control:not(textarea),
+.p4u-admin-filter-row > input.form-control,
+.p4u-admin-filter-row > select.form-select,
+.p4u-admin-filter-row > select.form-select-sm,
+.p4u-admin-filter-row > .btn {
+  width: auto !important;
+  max-width: min(100%, 280px);
+}
+
+.p4u-admin-filter-row > input.form-control[type="date"] {
+  min-width: 128px;
+  max-width: 152px;
+  flex: 0 0 auto !important;
+}
+
+.p4u-admin-filter-row > .input-group:first-child,
+.p4u-admin-filter-row .p4u-filter-search {
+  flex: 1 1 140px;
+  min-width: 140px;
+  max-width: min(38vw, 300px);
+}
+
+/* Date range inside trailing action cluster: input-group must not collapse the field */
+.p4u-admin-filter-row__end .input-group {
+  flex: 0 0 auto;
+  min-width: 138px;
+  max-width: 168px;
+}
+
+.p4u-admin-filter-row__end .input-group > .form-control[type="date"] {
+  flex: 1 1 auto;
+  min-width: 108px;
+  width: auto !important;
+}
+
+/* Keep search icon + field on one line inside flex toolbars (theme/Bootstrap can wrap otherwise) */
+.p4u-admin-filter-row .input-group {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.p4u-admin-filter-row .input-group > .input-group-text {
+  flex: 0 0 auto;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.p4u-admin-filter-row .input-group > .form-control,
+.p4u-admin-filter-row .input-group > .form-select {
+  flex: 1 1 0;
+  min-width: 0;
+  width: 1% !important;
+  max-width: none;
+}
+
+.p4u-admin-filter-row .navbar-search {
+  flex: 1 1 200px;
+  min-width: 140px;
+  max-width: 360px;
+}
+
+.p4u-admin-filter-row .form-select,
+.p4u-admin-filter-row .form-select-sm {
+  width: auto;
+}
+
+.p4u-admin-filter-row > .form-control.ms-auto,
+.p4u-admin-filter-row > input.form-control.ms-auto {
+  flex: 1 1 200px;
+  min-width: 160px;
+  max-width: 380px;
+  width: auto !important;
+}
+
+.p4u-admin-filter-row__end {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  margin-left: auto;
+  align-self: center;
+}
+
+.p4u-admin-filter-row__end .btn {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  width: auto !important;
+  max-width: none !important;
+  white-space: nowrap;
+}
+
+.p4u-admin-filter-row__end > .form-control,
+.p4u-admin-filter-row__end > input.form-control {
+  flex: 0 0 auto;
+  width: auto !important;
+  max-width: 180px;
+}
+
+.p4u-admin-filter-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.p4u-admin-filter-row::-webkit-scrollbar-thumb {
+  background-color: rgba(15, 23, 42, 0.2);
+  border-radius: 4px;
+}
+
+/* Dashboard overview metric cards (click-through to modules) */
+.p4u-dashboard-metric-link .card {
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.p4u-dashboard-metric-link:hover .card,
+.p4u-dashboard-metric-link:focus-visible .card {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12) !important;
+}
+.p4u-dashboard-metric-link:focus-visible {
+  outline: 2px solid var(--primary-600, #0d9488);
+  outline-offset: 2px;
+}

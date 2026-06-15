@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: P4U Commerce API
+  version: 1.0.0
+  description: commerce-management-services — cart, checkout, orders — overview.
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Commerce
+paths:
+  /api/v1/commerce/public/health:
+    get:
+      tags: [Commerce]
+      responses:
+        '200':
+          description: OK
+  /api/v1/commerce/cart:
+    get:
+      tags: [Commerce]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Cart
+    delete:
+      tags: [Commerce]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Cleared
+    put:
+      tags: [Commerce]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Updated
+  /api/v1/commerce/checkout/quote:
+    post:
+      tags: [Commerce]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Quote
+  /api/v1/commerce/orders:
+    post:
+      tags: [Commerce]
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Order created
+  /api/v1/commerce/orders/from-cart:
+    post:
+      tags: [Commerce]
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Order from cart
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

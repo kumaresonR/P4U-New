@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: P4U Notifications API
+  version: 1.0.0
+  description: notification-management-services — overview.
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Notifications
+paths:
+  /api/v1/notifications/public/health:
+    get:
+      tags: [Notifications]
+      responses:
+        '200': { description: OK }
+  /api/v1/notifications/me:
+    get:
+      tags: [Notifications]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Notifications for user }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

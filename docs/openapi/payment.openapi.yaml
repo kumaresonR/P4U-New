@@ -1,0 +1,54 @@
+openapi: 3.0.3
+info:
+  title: P4U Payments API
+  version: 1.0.0
+  description: payment-management-services — intents and verify — overview.
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Payments
+paths:
+  /api/v1/payments/public/health:
+    get:
+      tags: [Payments]
+      responses:
+        '200':
+          description: OK
+  /api/v1/payments/intents:
+    post:
+      tags: [Payments]
+      security:
+        - bearerAuth: []
+      summary: Create payment intent
+      responses:
+        '201':
+          description: Intent created
+  /api/v1/payments/intents/{id}:
+    get:
+      tags: [Payments]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Intent
+  /api/v1/payments/verify:
+    post:
+      tags: [Payments]
+      security:
+        - bearerAuth: []
+      summary: Verify Razorpay payment
+      responses:
+        '200':
+          description: Verification result
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

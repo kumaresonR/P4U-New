@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: P4U Social (Socio) API
+  version: 1.0.0
+  description: socio-management-services — feed and posts — overview. Base path is /api/v1/social.
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Social
+paths:
+  /api/v1/social/public/health:
+    get:
+      tags: [Social]
+      responses:
+        '200':
+          description: OK
+  /api/v1/social/feed:
+    get:
+      tags: [Social]
+      security:
+        - bearerAuth: []
+      summary: Personalized feed
+      responses:
+        '200':
+          description: Feed
+  /api/v1/social/posts:
+    post:
+      tags: [Social]
+      security:
+        - bearerAuth: []
+      summary: Create post
+      responses:
+        '201':
+          description: Created
+  /api/v1/social/posts/{postId}:
+    get:
+      tags: [Social]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post
+    delete:
+      tags: [Social]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

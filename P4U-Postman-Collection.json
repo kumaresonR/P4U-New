@@ -1,0 +1,773 @@
+{
+  "info": {
+    "name": "P4U Tech",
+    "description": "Aligned with PROJECT-STATUS.md (repo root). All routes hit p4u-api-gateway-services by default (same as NEXT_PUBLIC_API_GATEWAY_URL / VITE_API_GATEWAY_URL). Path prefixes: /health, /api/auth/*, /api/admin/*, /uploads/*, /api/v1/catalog|content|profile|commerce|payments|notifications|vendor|social/*. Override collection variable gateway_url only if your gateway binds elsewhere; for direct-to-service debugging use each service port from its .env.example.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gateway_url", "value": "http://localhost:8080" },
+    { "key": "access_token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "API Gateway",
+      "item": [
+        { "name": "Gateway Health", "request": { "method": "GET", "url": "{{gateway_url}}/health" } },
+        { "name": "Gateway Root (endpoint index)", "request": { "method": "GET", "url": "{{gateway_url}}/" } }
+      ]
+    },
+    {
+      "name": "Auth Service",
+      "item": [
+        {
+          "name": "Health",
+          "request": { "method": "GET", "url": "{{gateway_url}}/api/auth/public/health" }
+        },
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/auth/public/signup",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"userType\": \"CUSTOMER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/auth/public/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/auth/public/refresh?refreshToken=YOUR_REFRESH_TOKEN"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/auth/logout",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"YOUR_REFRESH_TOKEN\"\n}" }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/auth/public/forgot-password",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"test@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/auth/change-password",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}" }
+          }
+        },
+        {
+          "name": "Introspect Token",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/auth/introspect",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Introspect-Secret", "value": "your-introspect-secret" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"token\": \"{{access_token}}\"\n}" }
+          }
+        },
+        {
+          "name": "Customer Info",
+          "request": { "method": "GET", "url": "{{gateway_url}}/api/auth/customer/info" }
+        },
+        {
+          "name": "Vendor Info",
+          "request": { "method": "GET", "url": "{{gateway_url}}/api/auth/vendor/info" }
+        },
+        {
+          "name": "Admin Info",
+          "request": { "method": "GET", "url": "{{gateway_url}}/api/auth/admin/info" }
+        }
+      ]
+    },
+    {
+      "name": "Catalog Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/public/health" } },
+        { "name": "List Categories", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/categories?limit=20&offset=0" } },
+        { "name": "Category Children", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/categories/:id/children" } },
+        { "name": "List Vendors", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/vendors?limit=20&offset=0" } },
+        { "name": "Get Vendor", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/vendors/:vendorId" } },
+        { "name": "Vendor Products", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/vendors/:vendorId/products?limit=20&offset=0" } },
+        { "name": "Get Product", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/products/:productId" } },
+        { "name": "List Services", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/services?limit=20&offset=0" } },
+        { "name": "Get Service", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/services/:id" } },
+        { "name": "Search", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/catalog/search?q=plumbing&limit=20&offset=0" } }
+      ]
+    },
+    {
+      "name": "Content Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/public/health" } },
+        { "name": "Banners", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/banners" } },
+        { "name": "Popups", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/popups" } },
+        { "name": "Reels", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/reels" } },
+        { "name": "Classified", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/classified" } },
+        { "name": "Home Feed", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/home" } },
+        { "name": "Brands", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/brands?limit=20&offset=0" } },
+        { "name": "Featured Products", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/featured-products?limit=20&offset=0" } },
+        { "name": "Service Highlights", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/service-highlights?limit=20&offset=0" } },
+        {
+          "name": "Newsletter Subscribe",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/content/newsletter/subscribe",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"9876543210\"\n}" }
+          }
+        },
+        {
+          "name": "Admin (ADMIN + content.admin.manage)",
+          "item": [
+            {
+              "name": "Create brand",
+              "request": {
+                "method": "POST",
+                "url": "{{gateway_url}}/api/v1/content/admin/brands",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Acme\",\n  \"imageUrl\": \"https://example.com/logo.png\",\n  \"redirectUrl\": \"https://example.com\",\n  \"sortOrder\": 0,\n  \"isActive\": true\n}"
+                }
+              }
+            },
+            {
+              "name": "Get brand by id",
+              "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/admin/brands/:id" }
+            },
+            {
+              "name": "Patch brand",
+              "request": {
+                "method": "PATCH",
+                "url": "{{gateway_url}}/api/v1/content/admin/brands/:id",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"isActive\": false\n}" }
+              }
+            },
+            {
+              "name": "Delete brand",
+              "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/content/admin/brands/:id" }
+            },
+            {
+              "name": "Create featured product",
+              "request": {
+                "method": "POST",
+                "url": "{{gateway_url}}/api/v1/content/admin/featured-products",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Widget\",\n  \"imageUrl\": \"https://example.com/p.png\",\n  \"section\": \"home\",\n  \"price\": \"99\",\n  \"redirectUrl\": null,\n  \"sortOrder\": 0,\n  \"isActive\": true\n}"
+                }
+              }
+            },
+            {
+              "name": "Get featured product by id",
+              "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/admin/featured-products/:id" }
+            },
+            {
+              "name": "Patch featured product",
+              "request": {
+                "method": "PATCH",
+                "url": "{{gateway_url}}/api/v1/content/admin/featured-products/:id",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"sortOrder\": 1\n}" }
+              }
+            },
+            {
+              "name": "Delete featured product",
+              "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/content/admin/featured-products/:id" }
+            },
+            {
+              "name": "Create service highlight",
+              "request": {
+                "method": "POST",
+                "url": "{{gateway_url}}/api/v1/content/admin/service-highlights",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Fast delivery\",\n  \"description\": \"Same-day in metro\",\n  \"iconUrl\": \"https://example.com/icon.png\",\n  \"imageUrl\": null,\n  \"redirectUrl\": null,\n  \"sortOrder\": 0,\n  \"isActive\": true\n}"
+                }
+              }
+            },
+            {
+              "name": "Get service highlight by id",
+              "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/content/admin/service-highlights/:id" }
+            },
+            {
+              "name": "Patch service highlight",
+              "request": {
+                "method": "PATCH",
+                "url": "{{gateway_url}}/api/v1/content/admin/service-highlights/:id",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated title\"\n}" }
+              }
+            },
+            {
+              "name": "Delete service highlight",
+              "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/content/admin/service-highlights/:id" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Profile Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/public/health" } },
+        { "name": "Get My Profile", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/me" } },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PATCH",
+            "url": "{{gateway_url}}/api/v1/profile/me",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Updated Name\",\n  \"email\": \"updated@example.com\",\n  \"phone\": \"9876543210\"\n}" }
+          }
+        },
+        { "name": "Get Customer By ID", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/customers/:customerId" } },
+        { "name": "List Addresses", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/me/addresses" } },
+        {
+          "name": "Create Address",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/profile/me/addresses",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"label\": \"home\",\n  \"fullName\": \"John Doe\",\n  \"phone\": \"9876543210\",\n  \"addressLine1\": \"123 Main Street\",\n  \"addressLine2\": \"Apt 4B\",\n  \"city\": \"Chennai\",\n  \"state\": \"Tamil Nadu\",\n  \"postalCode\": \"600001\",\n  \"country\": \"India\",\n  \"isDefault\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Address",
+          "request": {
+            "method": "PUT",
+            "url": "{{gateway_url}}/api/v1/profile/me/addresses/:addressId",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"label\": \"work\",\n  \"addressLine1\": \"456 Office Road\",\n  \"city\": \"Chennai\"\n}" }
+          }
+        },
+        { "name": "Delete Address", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/profile/me/addresses/:addressId" } },
+        { "name": "List Wishlist", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/me/wishlist?limit=20&offset=0" } },
+        {
+          "name": "Add to Wishlist",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/profile/me/wishlist",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"productId\": \"product-uuid-here\",\n  \"vendorId\": \"vendor-uuid-here\"\n}" }
+          }
+        },
+        { "name": "Remove from Wishlist", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/profile/me/wishlist/:productId" } },
+        { "name": "Get Referral Code", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/me/referral-code" } },
+        { "name": "List My Referrals", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/me/referrals?limit=20&offset=0" } },
+        { "name": "Get Reward Points", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/profile/me/reward-points" } }
+      ]
+    },
+    {
+      "name": "Commerce Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/public/health" } },
+        { "name": "Get Cart", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/cart" } },
+        {
+          "name": "Replace Cart",
+          "request": {
+            "method": "PUT",
+            "url": "{{gateway_url}}/api/v1/commerce/cart",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"items\": [\n    { \"productId\": \"p1\", \"vendorId\": \"v1\", \"quantity\": 2, \"unitPrice\": \"100\" }\n  ]\n}" }
+          }
+        },
+        { "name": "Clear Cart", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/commerce/cart" } },
+        {
+          "name": "Add Cart Item",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/cart/items",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"productId\": \"product-uuid\",\n  \"vendorId\": \"vendor-uuid\",\n  \"quantity\": 1,\n  \"unitPrice\": \"299\"\n}" }
+          }
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PATCH",
+            "url": "{{gateway_url}}/api/v1/commerce/cart/items/:itemId",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"quantity\": 3\n}" }
+          }
+        },
+        { "name": "Remove Cart Item", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/commerce/cart/items/:itemId" } },
+        {
+          "name": "Merge Cart",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/cart/merge",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"items\": [\n    { \"productId\": \"p1\", \"quantity\": 1, \"unitPrice\": \"100\" }\n  ]\n}" }
+          }
+        },
+        {
+          "name": "Create Order from Cart",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/orders/from-cart",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"vendor-uuid\"\n}" }
+          }
+        },
+        { "name": "List My Orders", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/customers/:customerId/orders?limit=20&offset=0" } },
+        { "name": "Get Order", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/orders/:orderId" } },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/orders",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"vendor-uuid\",\n  \"totalAmount\": \"599\",\n  \"metadata\": { \"notes\": \"Please deliver ASAP\" }\n}" }
+          }
+        },
+        { "name": "Cancel Order", "request": { "method": "POST", "url": "{{gateway_url}}/api/v1/commerce/orders/:orderId/cancel" } },
+        {
+          "name": "Checkout Quote",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/checkout/quote",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"itemTotal\": 500,\n  \"platformFee\": 50,\n  \"discount\": 100\n}" }
+          }
+        },
+        {
+          "name": "Validate Coupon",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/coupons/validate",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"SAVE20\",\n  \"cartTotal\": 500,\n  \"vendorId\": \"vendor-uuid\"\n}" }
+          }
+        },
+        { "name": "Available Booking Slots", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/bookings/available-slots?vendorId=vendor-uuid&date=2026-03-26" } },
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/bookings",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"vendor-uuid\",\n  \"serviceId\": \"service-uuid\",\n  \"bookingDate\": \"2026-03-26\",\n  \"timeSlot\": \"09:00-11:00\",\n  \"notes\": \"Please come on time\",\n  \"totalAmount\": \"500\"\n}" }
+          }
+        },
+        { "name": "List My Bookings", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/bookings?limit=20&offset=0" } },
+        { "name": "Get Booking", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/bookings/:bookingId" } },
+        { "name": "Cancel Booking", "request": { "method": "POST", "url": "{{gateway_url}}/api/v1/commerce/bookings/:bookingId/cancel" } },
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/commerce/reviews",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"targetType\": \"vendor\",\n  \"targetId\": \"vendor-uuid\",\n  \"rating\": 5,\n  \"title\": \"Great service!\",\n  \"reviewText\": \"Very professional and on time.\"\n}" }
+          }
+        },
+        { "name": "List Reviews", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/reviews?targetType=vendor&targetId=vendor-uuid&limit=20&offset=0" } },
+        { "name": "Review Summary", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/commerce/reviews/summary?targetType=vendor&targetId=vendor-uuid" } }
+      ]
+    },
+    {
+      "name": "Payment Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/payments/public/health" } },
+        {
+          "name": "Create Payment Intent",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/payments/intents",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"orderId\": \"order-uuid\",\n  \"amount\": \"599\",\n  \"currency\": \"INR\"\n}" }
+          }
+        },
+        { "name": "Get Payment Intent", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/payments/intents/:id" } },
+        {
+          "name": "Webhook - Razorpay",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/payments/webhooks/razorpay",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-razorpay-signature", "value": "signature-here" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"event\": \"payment.captured\",\n  \"payload\": {}\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notification Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/notifications/public/health" } },
+        { "name": "My Notifications", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/notifications/me" } },
+        { "name": "Mark Notification Read", "request": { "method": "POST", "url": "{{gateway_url}}/api/v1/notifications/me/:id/read" } },
+        {
+          "name": "Register Device",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/notifications/devices/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"deviceToken\": \"fcm-token-here\",\n  \"platform\": \"android\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/public/health" } },
+        {
+          "name": "Register as Vendor (CUSTOMER)",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/vendor/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"businessName\": \"My Shop\",\n  \"ownerName\": \"John Doe\",\n  \"email\": \"shop@example.com\",\n  \"phone\": \"9876543210\",\n  \"businessType\": \"Retail\",\n  \"description\": \"A retail shop\"\n}" }
+          }
+        },
+        { "name": "Registration Status (CUSTOMER)", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/register/status" } },
+        { "name": "Get Vendor Profile", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/me" } },
+        {
+          "name": "Update Vendor Profile",
+          "request": {
+            "method": "PATCH",
+            "url": "{{gateway_url}}/api/v1/vendor/me",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"businessName\": \"Updated Shop Name\",\n  \"email\": \"updated@shop.com\"\n}" }
+          }
+        },
+        { "name": "List Orders", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/orders?limit=20&offset=0" } },
+        { "name": "List Orders by Status", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/orders?status=created&limit=20&offset=0" } },
+        { "name": "Get Order", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/orders/:orderId" } },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PATCH",
+            "url": "{{gateway_url}}/api/v1/vendor/orders/:orderId",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"confirmed\"\n}" }
+          }
+        },
+        { "name": "List Organization Orders", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/organization-orders?limit=20&offset=0" } },
+        {
+          "name": "Create Organization Order",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/vendor/organization-orders",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"customer-uuid\",\n  \"referralCode\": \"REF123\",\n  \"totalAmount\": \"1000\"\n}" }
+          }
+        },
+        {
+          "name": "Update Organization Order",
+          "request": {
+            "method": "PATCH",
+            "url": "{{gateway_url}}/api/v1/vendor/organization-orders/:id",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"completed\",\n  \"isClaimed\": true\n}" }
+          }
+        },
+        { "name": "Reviews by Order", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/reviews/by-order/:orderId" } },
+        { "name": "Referral Code Usage", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/referrals/code-usage/:code" } },
+        { "name": "Referral Org Orders", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/referrals/my-organization-orders/:code?limit=20&offset=0" } },
+        { "name": "Push Notification Info", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/vendor/integrations/push-notification" } }
+      ]
+    },
+    {
+      "name": "Socio Service",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/public/health" } },
+        { "name": "My Feed", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/feed?limit=20&offset=0" } },
+        { "name": "Public Feed", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/feed/public?limit=20&offset=0" } },
+        { "name": "Get Post", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/posts/:postId" } },
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/social/posts",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"contentText\": \"Hello from P4U!\",\n  \"mediaUrls\": [],\n  \"postType\": \"text\",\n  \"visibility\": \"public\"\n}" }
+          }
+        },
+        { "name": "Delete Post", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/social/posts/:postId" } },
+        { "name": "Like Post", "request": { "method": "POST", "url": "{{gateway_url}}/api/v1/social/posts/:postId/like" } },
+        { "name": "Unlike Post", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/social/posts/:postId/like" } },
+        { "name": "List Comments", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/posts/:postId/comments?limit=20&offset=0" } },
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/social/posts/:postId/comments",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"contentText\": \"Nice post!\",\n  \"parentCommentId\": null\n}" }
+          }
+        },
+        { "name": "Follow User", "request": { "method": "POST", "url": "{{gateway_url}}/api/v1/social/users/:userId/follow" } },
+        { "name": "Unfollow User", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/v1/social/users/:userId/follow" } },
+        { "name": "Get Followers", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/users/:userId/followers?limit=20&offset=0" } },
+        { "name": "Get Following", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/users/:userId/following?limit=20&offset=0" } },
+        { "name": "User Suggestions", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/users/suggestions?limit=10" } },
+        { "name": "Stories Feed", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/stories/feed" } },
+        { "name": "My Stories", "request": { "method": "GET", "url": "{{gateway_url}}/api/v1/social/stories/me" } },
+        {
+          "name": "Create Story",
+          "request": {
+            "method": "POST",
+            "url": "{{gateway_url}}/api/v1/social/stories",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"mediaUrl\": \"https://example.com/story.jpg\",\n  \"mediaType\": \"image\",\n  \"textOverlay\": \"Check this out!\"\n}" }
+          }
+        },
+        { "name": "View Story", "request": { "method": "POST", "url": "{{gateway_url}}/api/v1/social/stories/:storyId/view" } }
+      ]
+    },
+    {
+      "name": "Admin Service",
+      "item": [
+        {
+          "name": "Core",
+          "item": [
+            { "name": "Health", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/public/health" } },
+            { "name": "My Admin Info", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/me" } },
+            { "name": "Audit Logs", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/audit-logs?limit=20&page=1" } }
+          ]
+        },
+        {
+          "name": "Vendors",
+          "item": [
+            { "name": "List Vendors", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/vendors?limit=20&offset=0" } },
+            { "name": "Get Vendor", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/vendors/:id" } },
+            { "name": "Create Vendor", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/vendors", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"businessName\": \"Test Vendor\",\n  \"ownerName\": \"Owner\",\n  \"email\": \"vendor@test.com\",\n  \"phone\": \"9876543210\"\n}" } } },
+            { "name": "Update Vendor", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/vendors/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"businessName\": \"Updated Vendor\"\n}" } } },
+            { "name": "Delete Vendor", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/vendors/:id" } }
+          ]
+        },
+        {
+          "name": "Vendor signup & enquiries",
+          "item": [
+            { "name": "List vendor requests", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/vendor-requests?limit=20&offset=0" } },
+            {
+              "name": "Approve vendor request",
+              "request": {
+                "method": "PATCH",
+                "url": "{{gateway_url}}/api/admin/vendor-requests/:id/approve",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{}" }
+              }
+            },
+            { "name": "Delete vendor request", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/vendor-requests/:id" } },
+            { "name": "List vendor enquiries", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/vendor-enquiries?limit=20&offset=0" } },
+            { "name": "Get vendor enquiry", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/vendor-enquiries/:id" } },
+            {
+              "name": "Update vendor enquiry",
+              "request": {
+                "method": "PATCH",
+                "url": "{{gateway_url}}/api/admin/vendor-enquiries/:id",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"status\": \"resolved\"\n}" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customers",
+          "item": [
+            { "name": "List Customers", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/customers?limit=20&offset=0" } },
+            { "name": "Get Customer", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/customers/:id" } },
+            { "name": "Create Customer", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/customers", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"New Customer\",\n  \"email\": \"customer@test.com\",\n  \"phone\": \"9876543210\",\n  \"status\": \"active\"\n}" } } },
+            { "name": "Update Customer", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/customers/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Updated Customer\"\n}" } } },
+            { "name": "Delete Customer", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/customers/:id" } }
+          ]
+        },
+        {
+          "name": "Coupons",
+          "item": [
+            { "name": "List Coupons", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/coupons?limit=50&offset=0" } },
+            { "name": "Create Coupon", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/coupons", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"code\": \"SAVE20\",\n  \"title\": \"Save 20%\",\n  \"status\": \"active\",\n  \"discountJson\": { \"type\": \"percentage\", \"value\": 20 }\n}" } } },
+            { "name": "Update Coupon", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/coupons/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"inactive\"\n}" } } },
+            { "name": "Delete Coupon", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/coupons/:id" } }
+          ]
+        },
+        {
+          "name": "Occupations",
+          "item": [
+            { "name": "List occupations", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/occupations?purpose=all" } },
+            { "name": "Get occupation", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/occupations/:id" } },
+            {
+              "name": "Create occupation",
+              "request": {
+                "method": "POST",
+                "url": "{{gateway_url}}/api/admin/occupations",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Software Engineer\",\n  \"sortOrder\": 0,\n  \"isActive\": true\n}" }
+              }
+            },
+            {
+              "name": "Update occupation",
+              "request": {
+                "method": "PATCH",
+                "url": "{{gateway_url}}/api/admin/occupations/:id",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated title\"\n}" }
+              }
+            },
+            { "name": "Delete occupation", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/occupations/:id" } }
+          ]
+        },
+        {
+          "name": "Categories",
+          "item": [
+            { "name": "List Categories", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/categories?purpose=all" } },
+            { "name": "Get Category", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/categories/:id" } },
+            { "name": "Create Category", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/categories", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Plumbing\",\n  \"slug\": \"plumbing\",\n  \"sortOrder\": 1,\n  \"isActive\": true\n}" } } },
+            { "name": "Update Category", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/categories/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Category\"\n}" } } },
+            { "name": "Delete Category", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/categories/:id" } }
+          ]
+        },
+        {
+          "name": "Catalog services (admin)",
+          "item": [
+            { "name": "List services", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/services?purpose=all" } },
+            { "name": "Get service", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/services/:id" } },
+            {
+              "name": "Create service",
+              "request": {
+                "method": "POST",
+                "url": "{{gateway_url}}/api/admin/services",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"House cleaning\",\n  \"categoryId\": \"category-uuid\",\n  \"description\": \"Full home clean\",\n  \"isActive\": true,\n  \"metadata\": { \"imageUrl\": \"https://example.com/service.jpg\" }\n}"
+                }
+              }
+            },
+            {
+              "name": "Update service",
+              "request": {
+                "method": "PATCH",
+                "url": "{{gateway_url}}/api/admin/services/:id",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated service name\"\n}" }
+              }
+            },
+            { "name": "Delete service", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/services/:id" } },
+            {
+              "name": "Batch unlink services for category",
+              "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/services/batch/:categoryId" }
+            }
+          ]
+        },
+        {
+          "name": "Products",
+          "item": [
+            { "name": "List Products", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/products?limit=20&offset=0" } },
+            { "name": "Get Product", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/products/:id" } },
+            { "name": "Create Product", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/products", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"vendor-uuid\",\n  \"categoryId\": \"category-uuid\",\n  \"name\": \"Test Product\",\n  \"price\": \"299\",\n  \"isActive\": true\n}" } } },
+            { "name": "Update Product", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/products/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Product\",\n  \"price\": \"399\"\n}" } } },
+            { "name": "Delete Product", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/products/:id" } }
+          ]
+        },
+        {
+          "name": "Orders",
+          "item": [
+            { "name": "List Orders", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/orders?limit=20&offset=0" } },
+            { "name": "Get Order", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/orders/individual/:id" } },
+            { "name": "Create Order", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/orders", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"vendor-uuid\",\n  \"customerId\": \"customer-uuid\",\n  \"totalAmount\": \"599\"\n}" } } },
+            { "name": "Update Order", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/orders/individual/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"completed\"\n}" } } }
+          ]
+        },
+        {
+          "name": "Banners",
+          "item": [
+            { "name": "List Banners", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/allBanners" } },
+            { "name": "Get Banner", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/banners/:id" } },
+            { "name": "Create Banner", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/banners", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Summer Sale\",\n  \"imageUrl\": \"https://example.com/banner.jpg\",\n  \"redirectUrl\": \"/shop\",\n  \"sortOrder\": 1,\n  \"isActive\": true\n}" } } },
+            { "name": "Update Banner", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/banners/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated Banner\"\n}" } } },
+            { "name": "Delete Banner", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/banners/:id" } },
+            { "name": "List Popup Banners", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/popupBanner" } },
+            { "name": "Get Popup Banner", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/popupBanner/:id" } },
+            { "name": "Create Popup Banner", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/addPopupBanner", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Flash Sale\",\n  \"imageUrl\": \"https://example.com/popup.jpg\",\n  \"isActive\": true\n}" } } },
+            { "name": "Update Popup Banner", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/popupBanner/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"isActive\": false\n}" } } },
+            { "name": "Delete Popup Banner", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/popupBanner/:id" } }
+          ]
+        },
+        {
+          "name": "Posts & Feed",
+          "item": [
+            { "name": "List Posts", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/posts?limit=20&offset=0" } },
+            { "name": "Get Post", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/posts/:id" } },
+            { "name": "Create Post", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/add_posts", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"content\": \"New announcement\",\n  \"status\": \"published\"\n}" } } },
+            { "name": "Update Post", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/posts/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"hidden\"\n}" } } },
+            { "name": "Delete Post", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/posts/:id" } },
+            { "name": "List Ad Feed", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/advertisementFeed?limit=20&offset=0" } },
+            { "name": "Create Ad Feed", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/advertisementFeed", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Sponsored Ad\",\n  \"imageUrl\": \"https://example.com/ad.jpg\",\n  \"redirectUrl\": \"/promo\"\n}" } } },
+            { "name": "Update Ad Feed", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/advertisementFeed/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"inactive\"\n}" } } },
+            { "name": "Delete Ad Feed", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/advertisementFeed/:id" } }
+          ]
+        },
+        {
+          "name": "Vendor Reviews",
+          "item": [
+            { "name": "List Reviews", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/vendorReviews?limit=20&offset=0" } },
+            { "name": "Create Review", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/vendorReviews", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"vendorId\": \"vendor-uuid\",\n  \"rating\": 5,\n  \"review\": \"Excellent vendor\"\n}" } } },
+            { "name": "Update Review", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/vendorReviews/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"hidden\"\n}" } } },
+            { "name": "Delete Review", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/vendorReviews/:id" } }
+          ]
+        },
+        {
+          "name": "Platform Config",
+          "item": [
+            { "name": "List Platform Variables", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/platformVariables?limit=20&offset=0" } },
+            { "name": "Create Platform Variable", "request": { "method": "POST", "url": "{{gateway_url}}/api/admin/platformVariables", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"key\": \"app_version\",\n  \"value\": { \"min\": \"1.0.0\", \"latest\": \"1.2.0\" },\n  \"category\": \"app\",\n  \"isActive\": true\n}" } } },
+            { "name": "Update Platform Variable", "request": { "method": "PATCH", "url": "{{gateway_url}}/api/admin/platformVariables/:id", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"value\": { \"min\": \"1.1.0\", \"latest\": \"1.3.0\" }\n}" } } },
+            { "name": "Delete Platform Variable", "request": { "method": "DELETE", "url": "{{gateway_url}}/api/admin/platformVariables/:id" } },
+            { "name": "List Website Queries", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/websiteQueries?limit=20&offset=0" } }
+          ]
+        },
+        {
+          "name": "Analytics",
+          "item": [
+            { "name": "Metadata Bundle", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/metadata/all/null" } },
+            { "name": "Tax configuration", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/taxconfiguration" } },
+            { "name": "Points settlements list", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/Settlements/allPoints/null" } },
+            { "name": "Customer Join Analytics", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/usersJoined/customers?dateFrom=2026-01-01&dateTo=2026-12-31" } },
+            { "name": "Vendor Join Analytics", "request": { "method": "GET", "url": "{{gateway_url}}/api/admin/usersJoined/vendors?dateFrom=2026-01-01&dateTo=2026-12-31" } }
+          ]
+        }
+      ]
+    }
+  ]
+}
