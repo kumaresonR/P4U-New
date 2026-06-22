@@ -189,7 +189,9 @@ export const createAuthRoutes = (
         });
         return res.status(201).json(auth);
       } catch (error: any) {
-        return res.status(400).json({ message: mapCaughtErrorToMessage(error) });
+        const message = mapCaughtErrorToMessage(error);
+        const status = statusForPhoneExchangeFailure(message);
+        return res.status(status).json({ message });
       }
     },
   );
