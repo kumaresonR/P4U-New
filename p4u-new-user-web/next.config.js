@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
-/** @type {import('next').NextConfig} */
-// GitHub Pages needs /p4u; `next dev` uses no basePath so http://localhost:3000/ works.
-const useGhPagesBase = process.env.NODE_ENV === 'production';
+// VPS production: no basePath (https://planext4u.com/).
+// GitHub Pages only: set GITHUB_PAGES=true (serves under /p4u).
+const useGhPagesBase = process.env.GITHUB_PAGES === 'true';
 
 const nextConfig = {
   // output: 'export' removed — dynamic API-driven routes require server rendering

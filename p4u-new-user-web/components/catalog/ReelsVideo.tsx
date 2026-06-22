@@ -11,14 +11,14 @@ interface Product {
 }
 
 const FALLBACK_PRODUCTS: Product[] = [
-  { id: 1, username: "@style_icon",  caption: "Summer vibes ✨",   video: "/p4u/video/vid1.mp4" },
-  { id: 2, username: "@tech_guru",   caption: "Unboxing the ...",  video: "/p4u/video/vid2.mp4" },
-  { id: 3, username: "@foodie_life", caption: "Delicious! 🍕",     video: "/p4u/video/vid3.mp4" },
-  { id: 4, username: "@wanderlust",  caption: "Mountain view 🏔",  video: "/p4u/video/vid4.mp4" },
-  { id: 5, username: "@fit_fam",     caption: "Morning routine",   video: "/p4u/video/vid5.mp4" },
-  { id: 6, username: "@creator_hub", caption: "New drop 🔥",       video: "/p4u/video/vid6.mp4" },
-  { id: 7, username: "@style_icon",  caption: "Summer vibes ✨",   video: "/p4u/video/vid1.mp4" },
-  { id: 8, username: "@tech_guru",   caption: "Unboxing the ...",  video: "/p4u/video/vid2.mp4" },
+  { id: 1, username: "@style_icon",  caption: "Summer vibes ✨",   video: "/video/vid1.mp4" },
+  { id: 2, username: "@tech_guru",   caption: "Unboxing the ...",  video: "/video/vid2.mp4" },
+  { id: 3, username: "@foodie_life", caption: "Delicious! 🍕",     video: "/video/vid3.mp4" },
+  { id: 4, username: "@wanderlust",  caption: "Mountain view 🏔",  video: "/video/vid4.mp4" },
+  { id: 5, username: "@fit_fam",     caption: "Morning routine",   video: "/video/vid5.mp4" },
+  { id: 6, username: "@creator_hub", caption: "New drop 🔥",       video: "/video/vid6.mp4" },
+  { id: 7, username: "@style_icon",  caption: "Summer vibes ✨",   video: "/video/vid1.mp4" },
+  { id: 8, username: "@tech_guru",   caption: "Unboxing the ...",  video: "/video/vid2.mp4" },
 ];
  
 function VideoModal({ item, onClose }: { item: Product; onClose: () => void }) {
