@@ -27,8 +27,12 @@ let refreshInFlight = null;
 async function refreshAccessToken() {
   const rt = getRefreshToken();
   if (!rt) throw new Error("No refresh token");
-  const url = buildApiUrl(`/api/auth/public/refresh?refreshToken=${encodeURIComponent(rt)}`);
-  const res = await fetch(url, { method: "POST", headers: { Accept: "application/json" } });
+  const url = buildApiUrl("/api/auth/public/refresh");
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: JSON.stringify({ refreshToken: rt }),
+  });
   const text = await res.text();
   let data = null;
   try {
@@ -146,9 +150,10 @@ export async function apiRequest(path, options = {}) {
   }
 
   if (res.status === 401 && !skipAuth) {
-    // For admin APIs, any unauthorized response should end the session and return to login.
-    // This avoids stale-token loops where pages keep showing "Invalid or missing token".
-    forceLoginRedirect();
+    // End session only when refresh cannot recover (no refresh token or retry still 401).
+    if (!getRefreshToken() || _retry401) {
+      forceLoginRedirect();
+    }
   }
 
   if (!res.ok) {

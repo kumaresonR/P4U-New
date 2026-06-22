@@ -42,11 +42,11 @@ export function AuthProvider({ children }) {
       }
       const exp = decodeJwtExpMs(token);
       const isExpired = exp != null && exp <= Date.now();
-      if (isExpired) {
+      if (isExpired || (exp != null && exp - Date.now() < 120_000)) {
         try {
           await ensureTokenFresh();
         } catch {
-          clearTokens();
+          // Keep stored session on transient refresh/network failures.
         }
       }
       if (!cancelled) syncFromStorage();
@@ -104,6 +104,41 @@ export function AuthProvider({ children }) {
     window.addEventListener("p4u-admin-token-updated", sync);
     return () => window.removeEventListener("p4u-admin-token-updated", sync);
   }, [syncFromStorage]);
+
+  // Background refresh so admin stays signed in until explicit logout.
+  useEffect(() => {
+    if (!accessToken) return undefined;
+
+    const scheduleRefresh = () => {
+      const token = getAccessToken();
+      if (!token) return null;
+      const exp = decodeJwtExpMs(token);
+      const now = Date.now();
+      if (exp != null) {
+        let delayMs = exp - now - 45_000;
+        if (delayMs < 5_000) delayMs = Math.max(0, exp - now - 5_000);
+        if (exp - now < 90_000) delayMs = 0;
+        return delayMs;
+      }
+      return 60_000;
+    };
+
+    let timeoutId;
+    const runRefresh = async () => {
+      try {
+        await ensureTokenFresh();
+        syncFromStorage();
+      } catch {
+        /* retry on next interval */
+      }
+      timeoutId = setTimeout(runRefresh, scheduleRefresh() ?? 60_000);
+    };
+
+    timeoutId = setTimeout(runRefresh, scheduleRefresh() ?? 60_000);
+    return () => {
+      if (timeoutId != null) clearTimeout(timeoutId);
+    };
+  }, [accessToken, syncFromStorage]);
 
   const value = useMemo(
     () => ({

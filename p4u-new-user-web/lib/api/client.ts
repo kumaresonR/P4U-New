@@ -144,10 +144,11 @@ function extractHttpErrorMessage(
 async function refreshAccessToken(): Promise<void> {
   const { refresh } = tokenSnapshot();
   if (!refresh) throw new Error("No refresh token");
-  const url = `${BASE_URL}/api/auth/public/refresh?refreshToken=${encodeURIComponent(refresh)}`;
+  const url = `${BASE_URL}/api/auth/public/refresh`;
   const res = await fetch(url, {
     method: "POST",
-    headers: { Accept: "application/json" },
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: JSON.stringify({ refreshToken: refresh }),
   });
   const raw = await res.text();
   let data: any = null;
