@@ -30,6 +30,7 @@ interface RequestInternalOptions {
   skipAuthHeader?: boolean;
   skipAuthRefresh?: boolean;
   retry401?: boolean;
+  retryTransient?: boolean;
 }
 
 function authHeaders(): Record<string, string> {
@@ -136,7 +137,7 @@ async function refreshAccessTokenDeduped(): Promise<void> {
   await refreshInFlight;
 }
 
-async function ensureTokenFresh(): Promise<void> {
+export async function ensureTokenFresh(): Promise<void> {
   const { access, refresh } = tokenSnapshot();
   if (!access || !refresh) return;
   const expMs = decodeJwtExpMs(access);
@@ -168,7 +169,7 @@ async function request<T>(
   options: RequestInit = {},
   internal: RequestInternalOptions = {},
 ): Promise<T> {
-  const { skipAuthHeader = false, skipAuthRefresh = false, retry401 = false } = internal;
+  const { skipAuthHeader = false, skipAuthRefresh = false, retry401 = false, retryTransient = false } = internal;
   const url = `${BASE_URL}${path}`;
 
   if (!skipAuthRefresh) {
@@ -191,6 +192,10 @@ async function request<T>(
   try {
     res = await fetch(url, { ...options, headers });
   } catch (e: unknown) {
+    if (!retryTransient) {
+      await new Promise((r) => setTimeout(r, 800));
+      return request<T>(path, options, { ...internal, retryTransient: true });
+    }
     const msg = e instanceof Error ? e.message : String(e);
     const err: ApiErrorShape = {
       status: 0,
@@ -210,6 +215,10 @@ async function request<T>(
       parsed = rawText ? (JSON.parse(rawText) as Record<string, unknown>) : {};
     } catch {
       parsed = {};
+    }
+    if ((res.status === 502 || res.status === 503) && !retryTransient) {
+      await new Promise((r) => setTimeout(r, 600));
+      return request<T>(path, options, { ...internal, retryTransient: true });
     }
     if (res.status === 401 && !skipAuthRefresh && !retry401) {
       try {

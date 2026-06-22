@@ -35,7 +35,7 @@ export default function Header({ onCartOpen }: HeaderProps) {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [locationSearch, setLocationSearch] = useState("");
-  const { isLoggedIn, loggedPhone, displayName, login, logout: authLogout } = useAuth();
+  const { isLoggedIn, loggedPhone, displayName, isLoading, login, logout: authLogout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
   const searchRef = useRef<HTMLDivElement>(null);
@@ -335,7 +335,9 @@ export default function Header({ onCartOpen }: HeaderProps) {
                 className="relative flex-shrink-0 flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2.5 border border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors select-none"
                 onClick={handleLoginClick}
               >
-                {isLoggedIn ? (
+                {isLoading ? (
+                  <User className="w-4 xl:w-5 h-4 xl:h-5 text-black animate-pulse" strokeWidth={2} />
+                ) : isLoggedIn ? (
                   <>
                     <LoginAvatar />
                     <span className="text-xs xl:text-sm text-black hidden xl:inline max-w-[160px] truncate" title={displayName}>

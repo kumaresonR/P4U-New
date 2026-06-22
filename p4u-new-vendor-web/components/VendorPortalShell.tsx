@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { getStoredUsername, hasAccessToken, signOutVendorCompletely } from "@/lib/authSession";
 import { getVendorMe, type VendorProfile } from "@/lib/api/vendor";
+import type { ApiErrorShape } from "@/lib/api/client";
 
 export default function VendorPortalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -44,10 +45,17 @@ export default function VendorPortalShell({ children }: { children: React.ReactN
         const profile = await getVendorMe();
         if (cancelled) return;
         setMe(profile);
-      } catch {
-        if (!cancelled) {
-          router.replace("/onboarding");
+      } catch (err) {
+        if (cancelled) return;
+        const status =
+          typeof err === "object" && err !== null && "status" in err
+            ? (err as ApiErrorShape).status
+            : -1;
+        if (status === 401 || status === 403) {
+          router.replace("/");
+          return;
         }
+        router.replace("/onboarding");
       }
     })();
     return () => {

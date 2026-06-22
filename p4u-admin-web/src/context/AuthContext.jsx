@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { loginPublic } from "../lib/api/adminApi";
-import { ensureTokenFresh } from "../lib/api/client";
+import { ensureTokenFresh, revokeRefreshToken } from "../lib/api/client";
 import { clearTokens, getAccessToken, getStoredRoles, setTokens } from "../lib/api/tokenStorage";
 
 const AuthContext = createContext(null);
@@ -94,9 +94,11 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(() => {
-    clearTokens();
-    setAccessTokenState(null);
-    setRolesState([]);
+    void revokeRefreshToken().finally(() => {
+      clearTokens();
+      setAccessTokenState(null);
+      setRolesState([]);
+    });
   }, []);
 
   useEffect(() => {

@@ -331,7 +331,7 @@ export default function ShopPage({ onVendorSelect }: { onVendorSelect?: (vendorI
       offset: number;
       categoryId?: string;
       subcategoryId?: string;
-    } = { limit: 200, offset: 0 };
+    } = { limit: 100, offset: 0 };
     if (subcategoryId.trim()) params.subcategoryId = subcategoryId.trim();
     else if (parentCategoryId.trim()) params.categoryId = parentCategoryId.trim();
 
@@ -364,7 +364,10 @@ export default function ShopPage({ onVendorSelect }: { onVendorSelect?: (vendorI
           };
         }),
       );
-    }).catch(() => setSellers([])).finally(() => setLoadingSellers(false));
+    }).catch((err: unknown) => {
+      console.error("Failed to load shop products:", err);
+      setSellers([]);
+    }).finally(() => setLoadingSellers(false));
   }, [parentCategoryId, subcategoryId]);
 
   const filtered = useMemo(() => {

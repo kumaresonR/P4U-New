@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useState, useEffect, ReactNode } from "react";
 import { authApi } from "@/lib/api/auth";
 import type { ApiError } from "@/lib/api/client";
+import { ensureTokenFresh } from "@/lib/api/client";
 import {
   resolveCustomerIdFromAccessToken,
   displayNameFromAccessToken,
@@ -36,6 +37,15 @@ function accessTokenExpiresAtMs(accessToken: string): number | null {
   }
 }
 
+function clearStoredSession() {
+  localStorage.removeItem("p4u_loggedIn");
+  localStorage.removeItem("p4u_phone");
+  localStorage.removeItem("p4u_token");
+  localStorage.removeItem("p4u_refresh_token");
+  localStorage.removeItem("p4u_token_expires_in");
+  localStorage.removeItem("p4u_customer_id");
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggedPhone, setLoggedPhone] = useState("");
@@ -47,11 +57,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setDisplayName(displayNameFromAccessToken(accessToken, phone || null));
   };
 
-  const syncSessionFromStorage = useCallback(() => {
+  const applySessionFromStorage = useCallback(() => {
     const savedToken = localStorage.getItem("p4u_token");
+    const refresh = localStorage.getItem("p4u_refresh_token");
+    if (!savedToken && !refresh) return false;
+
     const phone = localStorage.getItem("p4u_phone") || "";
-    const loggedIn = localStorage.getItem("p4u_loggedIn") === "true";
-    if (!loggedIn || !phone) return;
+    localStorage.setItem("p4u_loggedIn", "true");
     setIsLoggedIn(true);
     setLoggedPhone(phone);
     setToken(savedToken);
@@ -61,12 +73,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (cid) localStorage.setItem("p4u_customer_id", cid);
     }
     syncDisplayName(savedToken, phone);
+    return true;
   }, []);
 
+  const syncSessionFromStorage = useCallback(() => {
+    applySessionFromStorage();
+  }, [applySessionFromStorage]);
+
   useEffect(() => {
-    syncSessionFromStorage();
-    setIsLoading(false);
-  }, [syncSessionFromStorage]);
+    let cancelled = false;
+
+    const runInit = async () => {
+      const hasSession = applySessionFromStorage();
+      if (!hasSession) {
+        if (!cancelled) setIsLoading(false);
+        return;
+      }
+
+      const refresh = localStorage.getItem("p4u_refresh_token");
+      if (refresh) {
+        try {
+          await ensureTokenFresh();
+          if (!cancelled) {
+            const updated = localStorage.getItem("p4u_token");
+            setToken(updated);
+            const phone = localStorage.getItem("p4u_phone") || "";
+            syncDisplayName(updated, phone);
+          }
+        } catch (e: unknown) {
+          const status =
+            typeof e === "object" && e !== null && "status" in e ? (e as ApiError).status : -1;
+          if (status === 401 || status === 403) {
+            clearStoredSession();
+            if (!cancelled) {
+              setIsLoggedIn(false);
+              setLoggedPhone("");
+              setToken(null);
+              setDisplayName("");
+            }
+          }
+        }
+      }
+
+      if (!cancelled) setIsLoading(false);
+    };
+
+    void runInit();
+    return () => {
+      cancelled = true;
+    };
+  }, [applySessionFromStorage]);
 
   useEffect(() => {
     const sync = () => syncSessionFromStorage();
@@ -86,6 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("p4u_token", res.accessToken);
       localStorage.setItem("p4u_refresh_token", res.refreshToken);
       localStorage.setItem("p4u_token_expires_in", String(res.expiresIn));
+      localStorage.setItem("p4u_loggedIn", "true");
       const customerId =
         res.customerId != null && String(res.customerId).trim() !== ""
           ? String(res.customerId)
@@ -104,6 +161,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         applyTokens(res);
       } catch (e: unknown) {
         const status = typeof e === "object" && e !== null && "status" in e ? (e as ApiError).status : -1;
+        if (status === 401 || status === 403) {
+          clearStoredSession();
+          setIsLoggedIn(false);
+          setLoggedPhone("");
+          setToken(null);
+          setDisplayName("");
+          return;
+        }
         if (status === 0 && !isRetryAfterNetworkFailure) {
           setTimeout(() => {
             void runRefresh(true);
@@ -165,12 +230,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoggedPhone("");
     setToken(null);
     setDisplayName("");
-    localStorage.removeItem("p4u_loggedIn");
-    localStorage.removeItem("p4u_phone");
-    localStorage.removeItem("p4u_token");
-    localStorage.removeItem("p4u_refresh_token");
-    localStorage.removeItem("p4u_token_expires_in");
-    localStorage.removeItem("p4u_customer_id");
+    clearStoredSession();
   }
 
   return (

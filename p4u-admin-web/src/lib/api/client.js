@@ -79,12 +79,24 @@ function forceLoginRedirect() {
   }
 }
 
+/** Revoke refresh token server-side before clearing local session. */
+export async function revokeRefreshToken() {
+  const rt = getRefreshToken();
+  const access = getAccessToken();
+  if (!rt || !access) return;
+  try {
+    await apiRequest("/api/auth/logout", { method: "POST", jsonBody: { refreshToken: rt } });
+  } catch {
+    /* still clear local session */
+  }
+}
+
 /**
  * @param {string} path - Absolute path starting with /api/...
- * @param {RequestInit & { skipAuth?: boolean, jsonBody?: unknown, _retry401?: boolean }} options
+ * @param {RequestInit & { skipAuth?: boolean, jsonBody?: unknown, _retry401?: boolean, _retryTransient?: boolean }} options
  */
 export async function apiRequest(path, options = {}) {
-  const { skipAuth = false, jsonBody, headers: extraHeaders, _retry401 = false, ...rest } = options;
+  const { skipAuth = false, jsonBody, headers: extraHeaders, _retry401 = false, _retryTransient = false, ...rest } = options;
   const url = buildApiUrl(path);
 
   if (!skipAuth) {
@@ -118,6 +130,10 @@ export async function apiRequest(path, options = {}) {
       body: jsonBody !== undefined ? JSON.stringify(jsonBody) : rest.body,
     });
   } catch (e) {
+    if (!_retryTransient) {
+      await new Promise((r) => setTimeout(r, 800));
+      return apiRequest(path, { ...options, _retryTransient: true });
+    }
     const msg = e instanceof Error ? e.message : String(e);
     throw new ApiError(
       0,
@@ -154,6 +170,11 @@ export async function apiRequest(path, options = {}) {
     if (!getRefreshToken() || _retry401) {
       forceLoginRedirect();
     }
+  }
+
+  if ((res.status === 502 || res.status === 503) && !_retryTransient) {
+    await new Promise((r) => setTimeout(r, 600));
+    return apiRequest(path, { ...options, _retryTransient: true });
   }
 
   if (!res.ok) {

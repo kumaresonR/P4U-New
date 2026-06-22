@@ -271,6 +271,8 @@ const ProductFormLayer = ({ isEdit = false, isView = false, productId, onSuccess
       const payload = {
         name: formData.name.trim() || null,
         availability: formData.availability === "Yes",
+        isActive: formData.availability === "Yes",
+        moderationStatus: formData.availability === "Yes" ? "approved" : "pending",
         vendorId: formData.vendorId || null,
         categoryId: formData.categoryId || null,
         serviceId: null,

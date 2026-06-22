@@ -13,7 +13,7 @@ import {
   Store,
 } from "lucide-react";
 import { authApi } from "@/lib/api/auth";
-import { persistAuthSession } from "@/lib/authSession";
+import { persistAuthSession, hasAccessToken } from "@/lib/authSession";
 import { sendPhoneOtp, clearRecaptcha } from "@/lib/firebase";
 
 const RECAPTCHA_ID = "p4u-vendor-recaptcha";
@@ -83,6 +83,12 @@ export default function VendorLoginCard() {
   const [timer, setTimer] = useState(RESEND_S);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const submitLock = useRef(false);
+
+  useEffect(() => {
+    if (hasAccessToken()) {
+      router.replace("/dashboard/product");
+    }
+  }, [router]);
 
   useEffect(() => {
     if (searchParams?.get("registered") === "1") {
