@@ -26,12 +26,16 @@ const LoginPage = () => {
       await login(username.trim(), password);
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      const msg =
+      let msg =
         err instanceof ApiError
           ? err.message
           : err instanceof Error
             ? err.message
             : "Sign in failed.";
+      if (/<html[\s>]/i.test(msg) || /405 Not Allowed/i.test(msg)) {
+        msg =
+          "Login API misconfigured: admin web must call https://api.planext4u.com (set VITE_API_GATEWAY_URL and rebuild, or proxy /api on nginx).";
+      }
       setError(msg);
     } finally {
       setSubmitting(false);
