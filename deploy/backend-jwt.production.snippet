@@ -1,0 +1,7 @@
+# Add to every backend service .env on the VPS that validates JWTs
+# (auth, admin, vendor, commerce, catalog, content, payment, notification, profile).
+#
+# Keycloak tokens from this deployment use iss=http://localhost:8180/realms/p4u-realm
+# even when KEYCLOAK_SERVER_URL=http://127.0.0.1:8180 for API calls.
+
+JWT_ISSUER_URI=http://localhost:8180/realms/p4u-realm
